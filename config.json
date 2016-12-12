@@ -164,27 +164,27 @@
     },
     "BuildArchitecture": {
       "description": "Sets the value of the build architecture.",
-      "valueType": "passThrough",
+      "valueType": "property",
       "values": ["x86", "arm", "arm-softfp", "x64", "arm64"],
       "defaultValue": "${CPUArch}"
     },
     "CmakeBuildType": {
       "description": "Sets the value of the build configuration.",
-      "valueType": "passThrough",
+      "valueType": "property",
       "values": [],
       "defaultValue": "Debug"
     },
     "HostOs": {
       "description": "OS for result binaries.",
-      "valueType": "passThrough",
+      "valueType": "property",
       "values": ["AnyOS", "Windows_NT", "Linux", "OSX", "FreeBSD", "NetBSD"],
       "defaultValue": "${OSName}"
     },
     "ProcessorCount": {
       "description": "Sets the value of the number of processors available.",
-      "valueType": "passThrough",
+      "valueType": "property",
       "values": ["Numeric values"],
-      "defaultValue": "--numproc ${ProcessorCount}"
+      "defaultValue": "${ProcessorCount}"
     },
     "Project": {
       "description": "Project where the commands are going to be applied.",
@@ -358,14 +358,14 @@
         }
       },
       "defaultValues": {
-        "toolName": "terminal",
-        "Project": "src/Native/build-native",
+        "toolName": "msbuild",
         "settings": {
-           "BuildArchitecture": "default", 
-           "CmakeBuildType": "default",           
-           "HostOs": "default",
-           "ProcessorCount": "default"
-         }
+          "Project": "src/Native/build-native.proj",
+          "BuildArchitecture": "default",
+          "CmakeBuildType": "default",
+          "HostOs": "default",
+          "ProcessorCount": "default"
+        }
       }
     },
     "clean": {
@@ -516,7 +516,7 @@
     "msbuild": {
       "osSpecific": {
         "windows": {
-          "defaultParameters": "/nologo /verbosity:minimal /clp:Summary /maxcpucount /nodeReuse:false /l:BinClashLogger,Tools\\net45\\Microsoft.DotNet.Build.Tasks.dll;LogFile=binclash.log",
+          "defaultParameters": "/nologo /verbosity:minimal /clp:Summary /maxcpucount /nodeReuse:false",
           "path": "Tools/msbuild.cmd"
         },
         "unix": {

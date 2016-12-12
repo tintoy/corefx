@@ -1,4 +1,4 @@
-# This file probes for the prerequisites for the build system, and outputs commands for eval'ing
+# This file probes for the prerequisites for the build system, and outputs commands for evaluating
 # from the cmd scripts to set variables (and exit on error)
 
 function GetCMakeVersions
@@ -28,7 +28,7 @@ function GetCMakeInfo($regKey)
 
 function LocateCMake
 {
-  $errorMsg = "CMake is a pre-requisite to build this repository but it was not found on the path. Please install CMake from http://www.cmake.org/download/ and ensure it is on your path."
+  $errorMsg = "CMake is a prerequisite to build this repository but it was not found on the path. Please install CMake from http://www.cmake.org/download/ and ensure it is on your path."
   $inPathPath = (get-command cmake.exe -ErrorAction SilentlyContinue).Path
   if ($inPathPath -ne $null) {
     return $inPathPath
@@ -50,7 +50,12 @@ function LocateCMake
     Sort-Object -property @{Expression={$_.version}; Ascending=$false} |
     select -first 1).path
   if ($newestCMakePath -eq $null) {
-    Throw $errorMsg
+      # Acquire CMake.
+      $newestCMakePath = .\Get-CMake.ps1
+      # If acquisition fails then, give up.
+      if ($newestCMakePath -eq $null) {
+          Throw $errorMsg
+      }
   }
   return $newestCMakePath
 }
