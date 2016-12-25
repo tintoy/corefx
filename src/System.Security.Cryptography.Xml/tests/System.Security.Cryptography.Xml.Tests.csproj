@@ -13,7 +13,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\pkg\System.Security.Cryptography.Xml.pkgproj">
-      <Project>{B0328E2E-E985-4C0B-A808-30C85620FE07}</Project>
+      <Project>{E7F19085-6570-4811-8D3F-16B576049403}</Project>
       <Name>System.Security.Cryptography.Xml</Name>
     </ProjectReference>
   </ItemGroup>
