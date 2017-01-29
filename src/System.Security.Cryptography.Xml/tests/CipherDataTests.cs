@@ -92,5 +92,40 @@ namespace System.Security.Cryptography.Xml.Tests
                 new [] { new CipherReference("http://dummy.uri.transform.io", new TransformChain()) },
             };
         }
+
+        [Fact]
+        public void CipherReference_Null()
+        {
+            CipherData cipherData = new CipherData();
+            Assert.Throws<ArgumentNullException>(() => cipherData.CipherReference = null);
+        }
+
+        [Fact]
+        public void CipherReference_CipherValueSet()
+        {
+            CipherData cipherData = new CipherData(new byte[0]);
+            Assert.Throws<CryptographicException>(() => cipherData.CipherReference = new CipherReference());
+        }
+
+        [Fact]
+        public void CipherValue_Null()
+        {
+            CipherData cipherData = new CipherData(new CipherReference());
+            Assert.Throws<ArgumentNullException>(() => cipherData.CipherValue = null);
+        }
+
+        [Fact]
+        public void CipherValue_CipherReferenceSet()
+        {
+            CipherData cipherData = new CipherData(new CipherReference());
+            Assert.Throws<CryptographicException>(() => cipherData.CipherValue = new byte[0]);
+        }
+
+        [Fact]
+        public void LoadXml_Null()
+        {
+            CipherData cipherData = new CipherData();
+            Assert.Throws<ArgumentNullException>(() => cipherData.LoadXml(null));
+        }
     }
 }
