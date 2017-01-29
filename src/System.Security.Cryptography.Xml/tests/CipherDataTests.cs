@@ -44,9 +44,7 @@ namespace System.Security.Cryptography.Xml.Tests
             XmlElement xmlElement = cipherData.GetXml();
             Assert.NotNull(xmlElement);
             Assert.Equal(
-                string.Format(
-                    "<CipherData xmlns=\"http://www.w3.org/2001/04/xmlenc#\"><CipherValue>{0}</CipherValue></CipherData>", 
-                    Convert.ToBase64String(cipherValue)), 
+                $"<CipherData xmlns=\"http://www.w3.org/2001/04/xmlenc#\"><CipherValue>{Convert.ToBase64String(cipherValue)}</CipherValue></CipherData>", 
                 xmlElement.OuterXml);
         }
 
@@ -70,9 +68,7 @@ namespace System.Security.Cryptography.Xml.Tests
             if (cipherReference.Uri != string.Empty)
             {
                 Assert.Equal(
-                    string.Format(
-                        "<CipherData xmlns=\"http://www.w3.org/2001/04/xmlenc#\"><CipherReference URI=\"{0}\" /></CipherData>",
-                        cipherReference.Uri),
+                    $"<CipherData xmlns=\"http://www.w3.org/2001/04/xmlenc#\"><CipherReference URI=\"{cipherReference.Uri}\" /></CipherData>",
                     xmlElement.OuterXml);
             }
             else 
