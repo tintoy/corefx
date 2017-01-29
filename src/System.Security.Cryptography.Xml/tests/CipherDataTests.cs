@@ -28,12 +28,12 @@ namespace System.Security.Cryptography.Xml.Tests
         [Fact]
         public void Constructor_CipherValue_Null()
         {
-            Assert.Throws<ArgumentNullException>(() => new CipherData((byte[]) null));
+            Assert.Throws<ArgumentNullException>(() => new CipherData((byte[])null));
         }
 
         [Theory]
         [InlineData(new byte[0])]
-        [InlineData(new byte[] { 1, 2, 3})]
+        [InlineData(new byte[] { 1, 2, 3 })]
         public void Constructor_CipherValue(byte[] cipherValue)
         {
             CipherData cipherData = new CipherData(cipherValue);
@@ -44,14 +44,14 @@ namespace System.Security.Cryptography.Xml.Tests
             XmlElement xmlElement = cipherData.GetXml();
             Assert.NotNull(xmlElement);
             Assert.Equal(
-                $"<CipherData xmlns=\"http://www.w3.org/2001/04/xmlenc#\"><CipherValue>{Convert.ToBase64String(cipherValue)}</CipherValue></CipherData>", 
+                $"<CipherData xmlns=\"http://www.w3.org/2001/04/xmlenc#\"><CipherValue>{Convert.ToBase64String(cipherValue)}</CipherValue></CipherData>",
                 xmlElement.OuterXml);
         }
 
         [Fact]
         public void Constructor_CipherReference_Null()
         {
-            Assert.Throws<ArgumentNullException>(() => new CipherData((CipherReference) null));
+            Assert.Throws<ArgumentNullException>(() => new CipherData((CipherReference)null));
         }
 
         [Theory]
@@ -71,7 +71,7 @@ namespace System.Security.Cryptography.Xml.Tests
                     $"<CipherData xmlns=\"http://www.w3.org/2001/04/xmlenc#\"><CipherReference URI=\"{cipherReference.Uri}\" /></CipherData>",
                     xmlElement.OuterXml);
             }
-            else 
+            else
             {
                 Assert.Equal(
                     "<CipherData xmlns=\"http://www.w3.org/2001/04/xmlenc#\"><CipherReference /></CipherData>",
@@ -152,7 +152,7 @@ namespace System.Security.Cryptography.Xml.Tests
 
         public static IEnumerable<object[]> LoadXml_CipherValue_Source()
         {
-            return new []
+            return new[]
             {
                 ToCipherDataTestCase("<root xmlns:enc='{0}'><enc:CipherValue>{1}</enc:CipherValue></root>", new byte[0]),
                 ToCipherDataTestCase("<root xmlns:enc='{0}'><enc:CipherValue>{1}</enc:CipherValue></root>", new byte[] { 5, 6, 7 }),
