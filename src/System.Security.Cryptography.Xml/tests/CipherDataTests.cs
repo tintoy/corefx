@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using Xunit;
+using Xunit.Extensions;
 
 namespace System.Security.Cryptography.Xml.Tests
 {
@@ -47,6 +48,49 @@ namespace System.Security.Cryptography.Xml.Tests
                     "<CipherData xmlns=\"http://www.w3.org/2001/04/xmlenc#\"><CipherValue>{0}</CipherValue></CipherData>", 
                     Convert.ToBase64String(cipherValue)), 
                 xmlElement.OuterXml);
+        }
+
+        [Fact]
+        public void Constructor_CipherReference_Null()
+        {
+            Assert.Throws<ArgumentNullException>(() => new CipherData((CipherReference) null));
+        }
+
+        [Theory]
+        [MemberData(nameof(Constructor_CipherReference_Source))]
+        public void Constructor_CipherReference(CipherReference cipherReference)
+        {
+            CipherData cipherData = new CipherData(cipherReference);
+
+            Assert.Null(cipherData.CipherValue);
+            Assert.Equal(cipherReference, cipherData.CipherReference);
+
+            XmlElement xmlElement = cipherData.GetXml();
+            Assert.NotNull(xmlElement);
+            if (cipherReference.Uri != string.Empty)
+            {
+                Assert.Equal(
+                    string.Format(
+                        "<CipherData xmlns=\"http://www.w3.org/2001/04/xmlenc#\"><CipherReference URI=\"{0}\" /></CipherData>",
+                        cipherReference.Uri),
+                    xmlElement.OuterXml);
+            }
+            else 
+            {
+                Assert.Equal(
+                    "<CipherData xmlns=\"http://www.w3.org/2001/04/xmlenc#\"><CipherReference /></CipherData>",
+                    xmlElement.OuterXml);
+            }
+        }
+
+        public static IEnumerable<object[]> Constructor_CipherReference_Source()
+        {
+            return new object[][]
+            {
+                new [] { new CipherReference() },
+                new [] { new CipherReference("http://dummy.urionly.io") },
+                new [] { new CipherReference("http://dummy.uri.transform.io", new TransformChain()) },
+            };
         }
     }
 }
