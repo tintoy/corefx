@@ -127,5 +127,80 @@ namespace System.Security.Cryptography.Xml.Tests
             CipherData cipherData = new CipherData();
             Assert.Throws<ArgumentNullException>(() => cipherData.LoadXml(null));
         }
+
+        [Fact]
+        public void LoadXml_NoValueOrReference()
+        {
+            XmlDocument xmlDocument = new XmlDocument();
+            xmlDocument.LoadXml("<root/>");
+
+            CipherData cipherData = new CipherData();
+
+            Assert.Throws<CryptographicException>(() => cipherData.LoadXml(xmlDocument.DocumentElement));
+        }
+
+        [Theory]
+        [MemberData(nameof(LoadXml_CipherValue_Source))]
+        public void LoadXml_CipherValue(XmlElement xmlElement, byte[] cipherValue)
+        {
+            CipherData cipherData = new CipherData();
+            cipherData.LoadXml(xmlElement);
+
+            Assert.Equal(cipherValue, cipherData.CipherValue);
+            Assert.Null(cipherData.CipherReference);
+
+            XmlElement gotXmlElement = cipherData.GetXml();
+            Assert.NotNull(gotXmlElement);
+            Assert.Equal(xmlElement.OuterXml, gotXmlElement.OuterXml);
+        }
+
+        public static IEnumerable<object[]> LoadXml_CipherValue_Source()
+        {
+            return new []
+            {
+                ToCipherDataTestCase("<root xmlns:enc='{0}'><enc:CipherValue>{1}</enc:CipherValue></root>", new byte[0]),
+                ToCipherDataTestCase("<root xmlns:enc='{0}'><enc:CipherValue>{1}</enc:CipherValue></root>", new byte[] { 5, 6, 7 }),
+                ToCipherDataTestCase("<root xmlns='{0}'><CipherValue>{1}</CipherValue></root>", new byte[0]),
+            };
+        }
+
+        public static object[] ToCipherDataTestCase(string xml, byte[] cipherData)
+        {
+            XmlDocument xmlDocument = new XmlDocument();
+            xmlDocument.LoadXml(string.Format(xml, EncryptedXml.XmlEncNamespaceUrl, Convert.ToBase64String(cipherData)));
+            return new object[] { xmlDocument.DocumentElement, cipherData };
+        }
+
+        [Theory]
+        [MemberData(nameof(LoadXml_CipherReference_Source))]
+        public void LoadXml_CipherReference(XmlElement xmlElement, string uri)
+        {
+            CipherData cipherData = new CipherData();
+            cipherData.LoadXml(xmlElement);
+
+            Assert.Equal(uri, cipherData.CipherReference.Uri);
+            Assert.Null(cipherData.CipherValue);
+
+            XmlElement gotXmlElement = cipherData.GetXml();
+            Assert.NotNull(gotXmlElement);
+            Assert.Equal(xmlElement.OuterXml, gotXmlElement.OuterXml);
+        }
+
+        public static IEnumerable<object[]> LoadXml_CipherReference_Source()
+        {
+            return new[]
+            {
+                ToCipherReferenceXmlElement("<root xmlns:enc='{0}'><enc:CipherReference URI=\"{1}\" /></root>", "http://dummy.io"),
+                ToCipherReferenceXmlElement("<root xmlns:enc='{0}'><enc:CipherReference URI=\"{1}\" /></root>", "https://encrypted.dummy.io"),
+                ToCipherReferenceXmlElement("<root xmlns='{0}'><CipherReference URI=\"{1}\" /></root>", "ftp://wtf.org"),
+            };
+        }
+
+        public static object[] ToCipherReferenceXmlElement(string xml, string uri)
+        {
+            XmlDocument xmlDocument = new XmlDocument();
+            xmlDocument.LoadXml(string.Format(xml, EncryptedXml.XmlEncNamespaceUrl, uri));
+            return new object[] { xmlDocument.DocumentElement, uri };
+        }
     }
 }
