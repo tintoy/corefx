@@ -41,22 +41,6 @@ namespace System.Security.Cryptography.Xml.Tests
         }
 
         /// <summary>
-        ///     Enter the temporary directory for the current test.
-        /// </summary>
-        /// <param name="testMethodName">
-        ///     The name of the current test method (optional; usually supplied by the compiler).
-        /// </param>
-        /// <returns>
-        ///     An <see cref="IDisposable"/> that, when disposed, returns to the previous directory.
-        /// </returns>
-        protected IDisposable EnterTempDirectory([CallerMemberName] string testMethodName = null)
-        {
-            return new PushDirectory(
-                GetTempDirectory(testMethodName)
-            );
-        }
-
-        /// <summary>
         ///     Get the temporary directory for the current test.
         /// </summary>
         /// <param name="testMethodName">
@@ -144,32 +128,6 @@ namespace System.Security.Cryptography.Xml.Tests
             return new FileInfo(
                 Path.Combine(tempDirectory.FullName, fileName)
             );
-        }
-
-        /// <summary>
-        ///     Temporarily enters a directory until disposed.
-        /// </summary>
-        class PushDirectory
-            : IDisposable
-        {
-            readonly string _originalDirectory;
-            readonly string _targetDirectory;
-
-            public PushDirectory(DirectoryInfo targetDirectory)
-                : this(targetDirectory.FullName)
-            {
-            }
-
-            public PushDirectory(string targetDirectory)
-            {
-                _originalDirectory = Directory.GetCurrentDirectory();
-                _targetDirectory = targetDirectory;
-            }
-
-            public void Dispose()
-            {
-                Directory.SetCurrentDirectory(_originalDirectory);
-            }
         }
     }
 }
