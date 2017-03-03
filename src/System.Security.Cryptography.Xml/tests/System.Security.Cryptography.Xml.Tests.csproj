@@ -30,6 +30,7 @@
     <Compile Include="SignedXmlTest.cs" />
     <Compile Include="SignedXmlTests.cs" />
     <Compile Include="TestHelpers.cs" />
+    <Compile Include="TestWithFilesBase.cs" />
     <Compile Include="TransformChainTest.cs" />
     <Compile Include="TransformTest.cs" />
     <Compile Include="XmlDecryptionTransformTest.cs" />
@@ -44,6 +45,7 @@
     <Compile Include="XmlLicenseTransformTest.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\Common\tests\System\IO\TempDirectory.cs" />
     <Compile Include="..\..\Common\tests\System\IO\TempFile.cs" />
   </ItemGroup>
   <ItemGroup>
