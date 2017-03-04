@@ -202,11 +202,8 @@ namespace System.Security.Cryptography.Xml.Tests
         [Fact]
         public void C14NSpecExample1()
         {
-            using (TestHelpers.CreateTestDtdFile(GetType().Name + "." + nameof(C14NSpecExample1)))
-            {
-                string res = ExecuteXmlDSigC14NTransform(C14NSpecExample1Input);
-                Assert.Equal(C14NSpecExample1Output, res);
-            }
+            string res = ExecuteXmlDSigC14NTransform(C14NSpecExample1Input);
+            Assert.Equal(C14NSpecExample1Output, res);
         }
 
         [Fact]
@@ -231,13 +228,13 @@ namespace System.Security.Cryptography.Xml.Tests
             Assert.Equal(C14NSpecExample4Output, res);
         }
 
-        [Fact(Skip = "TODO: fix me")]
+        [Fact]
         public void C14NSpecExample5()
         {
             string testName = GetType().Name + "." + nameof(C14NSpecExample5);
             using (TestHelpers.CreateTestTextFile(testName, "world"))
             {
-                string res = ExecuteXmlDSigC14NTransform(C14NSpecExample5Input(testName));
+                string res = ExecuteXmlDSigC14NTransform(C14NSpecExample5Input);
                 Assert.Equal(C14NSpecExample5Output, res);
             }
         }
@@ -261,7 +258,7 @@ namespace System.Security.Cryptography.Xml.Tests
             UTF8Encoding utf8 = new UTF8Encoding();
             byte[] data = utf8.GetBytes(InputXml.ToString());
             Stream stream = new MemoryStream(data);
-            using (XmlReader reader = XmlReader.Create(stream, new XmlReaderSettings { ValidationType = ValidationType.None, DtdProcessing = DtdProcessing.Parse }))
+            using (XmlReader reader = XmlReader.Create(stream, new XmlReaderSettings { ValidationType = ValidationType.None, DtdProcessing = DtdProcessing.Parse, XmlResolver = TestHelpers.StaticXmlResolver }))
             {
                 doc.Load(reader);
 
@@ -401,11 +398,11 @@ namespace System.Security.Cryptography.Xml.Tests
         // Example 5 from C14N spec - Entity References: 
         // http://www.w3.org/TR/xml-c14n#Example-Entities
         //
-        static string C14NSpecExample5Input(string worldName) =>
+        static string C14NSpecExample5Input =
                 "<!DOCTYPE doc [\n" +
                 "<!ATTLIST doc attrExtEnt ENTITY #IMPLIED>\n" +
                 "<!ENTITY ent1 \"Hello\">\n" +
-                $"<!ENTITY ent2 SYSTEM \"{worldName}.txt\">\n" +
+                "<!ENTITY ent2 SYSTEM \"world.txt\">\n" +
                 "<!ENTITY entExt SYSTEM \"earth.gif\" NDATA gif>\n" +
                 "<!NOTATION gif SYSTEM \"viewgif.exe\">\n" +
                 "]>\n" +

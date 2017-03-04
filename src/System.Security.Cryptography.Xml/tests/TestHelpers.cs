@@ -3,7 +3,9 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Xml;
 using System.Xml.Resolvers;
 
@@ -15,17 +17,14 @@ namespace System.Security.Cryptography.Xml.Tests
         {
             get
             {
-                XmlPreloadedResolver resolver = new XmlPreloadedResolver();
-                resolver.Add(
-                    new Uri("doc.dtd", UriKind.Relative),
-                    "<!-- presence required, not contents -->"
-                );
-                resolver.Add(
-                    new Uri("world.txt", UriKind.Relative),
-                    "world"
-                );
-
-                return resolver;
+                return new TestXmlResolver
+                {
+                    Data =
+                    {
+                        ["doc.dtd"] = "<!-- presence required, not contents -->",
+                        ["world.txt"] = "world"
+                    }
+                };
             }
         }
 
@@ -58,6 +57,30 @@ namespace System.Security.Cryptography.Xml.Tests
             File.WriteAllText(file.Path, content);
 
             return file;
+        }
+
+        class TestXmlResolver
+            : XmlResolver
+        {
+            public Dictionary<string, string> Data { get; } = new Dictionary<string, string>();
+
+            public override object GetEntity(Uri absoluteUri, string role, Type ofObjectToReturn)
+            {
+                string fileName = Path.GetFileName(absoluteUri.LocalPath);
+
+                string data;
+                if (!Data.TryGetValue(fileName, out data))
+                    return null;
+
+                if (ofObjectToReturn == typeof(Stream))
+                {
+                    return new MemoryStream(
+                        Encoding.UTF8.GetBytes(data)
+                    );
+                }
+
+                throw new ArgumentException($"Unexpected target type '{ofObjectToReturn.FullName}'.", nameof(ofObjectToReturn));
+            }
         }
     }
 }

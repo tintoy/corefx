@@ -286,7 +286,7 @@ namespace System.Security.Cryptography.Xml.Tests
                 "   &ent1;, &ent2;!\n" +
                 "</doc>\n" +
                 "\n" +
-                "<!-- Let {worldName}.txt contain \"world\" (excluding the quotes) -->\n";
+                "<!-- Let world.txt contain \"world\" (excluding the quotes) -->\n";
         static string C14NSpecExample5Output = 
                 "<doc attrExtEnt=\"entExt\">\n" +
                 "   Hello, world!\n" +
