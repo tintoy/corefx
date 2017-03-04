@@ -2,12 +2,33 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System;
 using System.IO;
+using System.Xml;
+using System.Xml.Resolvers;
 
 namespace System.Security.Cryptography.Xml.Tests
 {
     internal static class TestHelpers
     {
+        public static XmlResolver StaticXmlResolver
+        {
+            get
+            {
+                XmlPreloadedResolver resolver = new XmlPreloadedResolver();
+                resolver.Add(
+                    new Uri("doc.dtd", UriKind.Relative),
+                    "<!-- presence required, not contents -->"
+                );
+                resolver.Add(
+                    new Uri("world.txt", UriKind.Relative),
+                    "world"
+                );
+
+                return resolver;
+            }
+        }
+
         public static TempFile CreateTestDtdFile(string testName)
         {
             if (testName == null)
